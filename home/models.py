@@ -1,4 +1,5 @@
 from django.db import models
+from django.db.models.deletion import CASCADE, SET_NULL
 from .models import *
 
 
@@ -26,7 +27,7 @@ class Categories(models.Model):
     id = models.IntegerField(primary_key=True)
     name = models.CharField(max_length=45, blank=True, null=True)
     descriptions = models.CharField(max_length=250, blank=True, null=True)
-    categories = models.ForeignKey('self', models.DO_NOTHING, related_name='+', blank=True, null=True)
+    categories = models.ForeignKey('self', on_delete=models.CASCADE, related_name='+', blank=True, null=True)
 
     class Meta:
         db_table = 'categories'
@@ -44,7 +45,7 @@ class Customers(models.Model):
     fname = models.CharField(max_length=45)
     lname = models.CharField(max_length=45, blank=True, null=True)
     email = models.CharField(max_length=45, blank=True, null=True)
-    address = models.ForeignKey(Address, models.DO_NOTHING, blank=True, null=True)
+    address = models.ForeignKey(Address, on_delete=CASCADE, blank=True, null=True)
 
     class Meta:
         db_table = 'customers'
@@ -78,7 +79,7 @@ class OrderHasItems(models.Model):
 class Orders(models.Model):
     id = models.IntegerField(primary_key=True)
     purchase_date = models.DateField(blank=True, null=True)
-    customers = models.ForeignKey(Customers, models.DO_NOTHING)
+    customers = models.ForeignKey(Customers, on_delete=SET_NULL, blank=True, null=True)
 
     class Meta:
         db_table = 'orders'
@@ -97,7 +98,7 @@ class Products(models.Model):
 
 
 class Reviews(models.Model):
-    customers = models.OneToOneField(Customers, models.DO_NOTHING, primary_key=True)
+    customers = models.OneToOneField(Customers, on_delete=models.CASCADE, primary_key=True)
     ratings = models.FloatField(blank=True, null=True)
     description = models.CharField(max_length=250, blank=True, null=True)
     products = models.OneToOneField(Products, models.DO_NOTHING, blank=True, null=True)
