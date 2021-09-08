@@ -1,6 +1,6 @@
 from django.db import models
 from django.db.models.deletion import CASCADE, SET_NULL
-from .models import *
+#from .models import *
 
 
 class Address(models.Model):
@@ -101,15 +101,15 @@ class OrderHasItems(models.Model):
 
 
 class Orders(models.Model):
-    id = models.AutoField(primary_key=True)
+    id = models.AutoField(primary_key=True, auto_created=True)
     purchase_date = models.DateField(blank=True, null=True)
     customers = models.ForeignKey(Customers, on_delete=SET_NULL, blank=True, null=True)
 
     class Meta:
         db_table = 'orders'
 
-    def __str__(self):
-        return self.customers
+# def __str__(self):
+#     return self.customers
 
 
 class Products(models.Model):
