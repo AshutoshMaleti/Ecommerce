@@ -5,6 +5,7 @@ from .models import *
 
 admin.site.register(Address)
 admin.site.register(Customers)
+admin.site.register(CustomersHasAddresses)
 admin.site.register(Brand)
 admin.site.register(Products)
 admin.site.register(Orders)
