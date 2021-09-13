@@ -4,12 +4,12 @@ from .models import Address, Customers, Orders
 class CustomersSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Customers
-        fields = ['fname', 'lname', 'email', 'address']
-
+        fields = ['id', 'fname', 'lname', 'email', 'url']
+    '''
     def to_representation(self,instance):
         response=super().to_representation(instance)
         response['address']=AddressSerializer(instance.address).data
-        return response
+        return response'''
 
 class AddressSerializer(serializers.ModelSerializer):
     class Meta:
