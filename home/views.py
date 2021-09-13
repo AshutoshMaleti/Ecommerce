@@ -1,6 +1,5 @@
 from django.shortcuts import render
 
-#from rest_framework import viewsets
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
 
@@ -30,10 +29,6 @@ def CustomerDetails(request):
 
     return Response(serializer.data)
 #{"fname":"mohan","lname":"gandhi","email":"gandhi@rediff.com","address":"somewhere in south africa"}
-
-'''class CustomerDetails(viewsets.ModelViewSet):
-    quaryset=Customers.objects.all()
-    serializer=CustomersSerializer'''
 
 @api_view(['GET'])
 def GetCustomersDetails(request, pk):

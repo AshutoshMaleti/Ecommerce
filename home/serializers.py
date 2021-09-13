@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from .models import Address, Customers, CustomersHasAddresses, Orders
 
-class CustomersSerializer(serializers.HyperlinkedModelSerializer):
+class CustomersSerializer(serializers.ModelSerializer):
     class Meta:
         model = Customers
         fields = ['id', 'fname', 'lname', 'email']
