@@ -63,10 +63,10 @@ def SetAddress(request,pk):
     address=AddressSerializer(data=request.data)
     if address.is_valid():
         address.save()
-    
-    addressid=Address.objects.all().last()
-    customerid=Customers.objects.get(id=pk)
-    serializer=CustomerHasAddress(data={"customer":customerid.id,"address":addressid.id})
+
+    address=Address.objects.all().last()
+    customer=Customers.objects.get(id=pk)
+    serializer=CustomerHasAddress(data={"customer":customer.id,"address":address.id})
     if serializer.is_valid():    
         serializer.save()
     return Response('Address added')
