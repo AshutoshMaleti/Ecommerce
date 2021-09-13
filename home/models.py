@@ -8,11 +8,10 @@ class Address(models.Model):
     number = models.IntegerField(blank=True, null=True)
 
     class Meta:
-        managed = False
         db_table = 'address'
 
     def __str__(self):
-        self.city
+        return self.city
 
 class Brand(models.Model):
     id = models.IntegerField(primary_key=True)
@@ -20,11 +19,10 @@ class Brand(models.Model):
     description = models.CharField(max_length=45, blank=True, null=True)
 
     class Meta:
-        managed = False
         db_table = 'brand'
 
     def __str__(self):
-        self.name
+        return self.name
 
 class Categories(models.Model):
     id = models.IntegerField(primary_key=True)
@@ -32,22 +30,20 @@ class Categories(models.Model):
     descriptions = models.CharField(max_length=250, blank=True, null=True)
 
     class Meta:
-        managed = False
         db_table = 'categories'
 
     def __str__(self):
-        self.name
+        return self.name
 
 class CategoriesHasProducts(models.Model):
     categories = models.OneToOneField(Categories, models.DO_NOTHING, primary_key=True)
     products = models.OneToOneField('Products', models.DO_NOTHING, blank=True, null=True)
 
     class Meta:
-        managed = False
         db_table = 'categories_has_products'
 
     def __str__(self):
-        self.categories
+        return self.categories
 
 class Customers(models.Model):
     fname = models.CharField(max_length=45)
@@ -55,33 +51,30 @@ class Customers(models.Model):
     email = models.CharField(max_length=45, blank=True, null=True)
 
     class Meta:
-        managed = False
         db_table = 'customers'
 
     def __str__(self):
-        self.fname
+        return self.fname
 
 class CustomersHasAddresses(models.Model):
     customer = models.OneToOneField(Customers, models.DO_NOTHING, primary_key=True)
     address = models.OneToOneField(Address, models.DO_NOTHING, blank=True, null=True)
 
     class Meta:
-        managed = False
         db_table = 'customers_has_addresses'
-
-    def __str__(self):
-        self.customer
+    
+    '''def __str__(self):
+        return self.customer'''
 
 class CustomersHasFavoriteProducts(models.Model):
     customers = models.OneToOneField(Customers, models.DO_NOTHING, primary_key=True)
     products = models.OneToOneField(Brand, models.DO_NOTHING, blank=True, null=True)
 
     class Meta:
-        managed = False
         db_table = 'customers_has_favorite_products'
 
     def __str__(self):
-        self.customers
+        return self.customers
 
 class Items(models.Model):
     id = models.IntegerField(primary_key=True)
@@ -89,22 +82,20 @@ class Items(models.Model):
     products = models.ForeignKey('Products', models.DO_NOTHING, blank=True, null=True)
 
     class Meta:
-        managed = False
         db_table = 'items'
 
     def __str__(self):
-        self.products
+        return self.products
 
 class OrderHasItems(models.Model):
     order = models.OneToOneField('Orders', models.DO_NOTHING, primary_key=True)
     items = models.OneToOneField(Items, models.DO_NOTHING, blank=True, null=True)
 
     class Meta:
-        managed = False
         db_table = 'order_has_items'
 
     def __str__(self):
-        self.order
+        return self.order
 
 class Orders(models.Model):
     id = models.IntegerField(primary_key=True)
@@ -112,11 +103,10 @@ class Orders(models.Model):
     customers = models.ForeignKey(Customers, models.DO_NOTHING)
 
     class Meta:
-        managed = False
         db_table = 'orders'
 
     def __str__(self):
-        self.id
+        return self.id
 
 class Products(models.Model):
     id = models.IntegerField(primary_key=True)
@@ -127,11 +117,10 @@ class Products(models.Model):
     brand = models.ForeignKey(Brand, models.DO_NOTHING)
 
     class Meta:
-        managed = False
         db_table = 'products'
 
     def __str__(self):
-        self.name
+        return self.name
 
 class Reviews(models.Model):
     customers = models.OneToOneField(Customers, models.DO_NOTHING, primary_key=True)
@@ -140,8 +129,7 @@ class Reviews(models.Model):
     products = models.OneToOneField(Products, models.DO_NOTHING, blank=True, null=True)
 
     class Meta:
-        managed = False
         db_table = 'reviews'
 
     def __str__(self):
-        self.customers
+        return self.customers

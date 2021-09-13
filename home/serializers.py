@@ -1,10 +1,10 @@
 from rest_framework import serializers
-from .models import Address, Customers, Orders
+from .models import Address, Customers, CustomersHasAddresses, Orders
 
 class CustomersSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Customers
-        fields = ['id', 'fname', 'lname', 'email', 'url']
+        fields = ['id', 'fname', 'lname', 'email']
     '''
     def to_representation(self,instance):
         response=super().to_representation(instance)
@@ -14,9 +14,14 @@ class CustomersSerializer(serializers.HyperlinkedModelSerializer):
 class AddressSerializer(serializers.ModelSerializer):
     class Meta:
         model = Address
+        fields = ['id', 'state', 'city', 'street', 'number']
+
+class CustomerHasAddress(serializers.ModelSerializer):
+    class Meta:
+        model = CustomersHasAddresses
         fields='__all__'
 
 class OrdersSerializer(serializers.ModelSerializer):
     class Meta:
         model = Orders
-        fields='__all__'
+        fields = '__all__'

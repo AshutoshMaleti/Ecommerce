@@ -13,4 +13,5 @@ urlpatterns = [
     path('get-customers-details/<str:pk>/', views.GetCustomersDetails, name='GetCustomersDetails'),
     path('update-customers-details/<str:pk>/', views.UpdateCustomersDetails, name='UpdateCustomersDetails'),
     path('delete-customers-details/<str:pk>/', views.DeleteCustomer, name='DeleteCustomer'),
+    path('add-address/<str:pk>/', views.SetAddress, name='SetAddress'),
 ]

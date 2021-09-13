@@ -57,3 +57,17 @@ def DeleteCustomer(pk):
     customer.delelte()
 
     return Response('Customer deleted!')
+
+@api_view(['POST'])
+def SetAddress(request,pk):
+    address=AddressSerializer(data=request.data)
+    if address.is_valid():
+        address.save()
+    
+    addressid=Address.objects.all().last()
+    customerid=Customers.objects.get(id=pk)
+    serializer=CustomerHasAddress(data={"customer":customerid.id,"address":addressid.id})
+    if serializer.is_valid():    
+        serializer.save()
+    return Response('Address added')
+#{"state":"gujrat","city":"ahemdabad","street":"burrrrrrrrrrrrrah","number":"8765"}
