@@ -28,7 +28,7 @@ def CustomerDetails(request):
         serializer.save()
 
     return Response(serializer.data)
-#{"fname":"mohan","lname":"gandhi","email":"gandhi@rediff.com","address":"somewhere in south africa"}
+#{"fname":"","lname":"","email":""}
 
 @api_view(['GET'])
 def GetCustomersDetails(request, pk):
@@ -56,13 +56,19 @@ def DeleteCustomer(pk):
 @api_view(['POST'])
 def SetAddress(request,pk):
     address=AddressSerializer(data=request.data)
-    if address.is_valid():
-        address.save()
 
-    address=Address.objects.all().last()
-    customer=Customers.objects.get(id=pk)
-    serializer=CustomerHasAddress(data={"customer":customer.id,"address":address.id})
+    customerid=Customers.objects.get(id=pk)
+
+    if address in Address.objects.all():
+        presaved_address=Address.objects.get(state=address.state, city=address.city, street=address.street, number=address.number)
+        addressid=presaved_address.id
+
+    elif address.is_valid():
+        address.save()
+        addressid=Address.objects.all().last()
+
+    serializer=CustomerHasAddress(data={"customer":customerid.id,"address":addressid.id})
     if serializer.is_valid():    
         serializer.save()
     return Response('Address added')
-#{"state":"gujrat","city":"ahemdabad","street":"burrrrrrrrrrrrrah","number":"8765"}
+#{"state":"","city":"","street":"","number":""}
