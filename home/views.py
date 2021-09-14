@@ -57,18 +57,17 @@ def DeleteCustomer(pk):
 def SetAddress(request,pk):
     address=AddressSerializer(data=request.data)
 
+    Address.objects.get_or_create(state=address.initial_data['state'], city=address.initial_data['city'], street=address.initial_data['street'], number=address.initial_data['number'])
+
     customerid=Customers.objects.get(id=pk)
+    addressid=Address.objects.filter(state=address.initial_data['state'], city=address.initial_data['city'], street=address.initial_data['street'], number=address.initial_data['number'])
 
-    if address in Address.objects.all():
-        presaved_address=Address.objects.get(state=address.state, city=address.city, street=address.street, number=address.number)
-        addressid=presaved_address.id
+    CustomersHasAddresses(customer=customerid, address=addressid[0]).save()
 
-    elif address.is_valid():
-        address.save()
-        addressid=Address.objects.all().last()
+    
 
-    serializer=CustomerHasAddress(data={"customer":customerid.id,"address":addressid.id})
+    '''print(serializer.is_valid())
     if serializer.is_valid():    
-        serializer.save()
+        serializer.save()'''
     return Response('Address added')
-#{"state":"","city":"","street":"","number":""}
+#{"state":"7","city":"7","street":"7","number":"7"}

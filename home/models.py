@@ -36,7 +36,7 @@ class Categories(models.Model):
         return self.name
 
 class CategoriesHasProducts(models.Model):
-    categories = models.OneToOneField(Categories, models.DO_NOTHING, primary_key=True)
+    categories = models.OneToOneField(Categories, models.DO_NOTHING, blank=True, null=True)
     products = models.OneToOneField('Products', models.DO_NOTHING, blank=True, null=True)
 
     class Meta:
@@ -57,7 +57,8 @@ class Customers(models.Model):
         return self.fname
 
 class CustomersHasAddresses(models.Model):
-    customer = models.OneToOneField(Customers, models.DO_NOTHING, primary_key=True)
+    id=models.AutoField(primary_key=True)
+    customer = models.OneToOneField(Customers, models.DO_NOTHING, blank=True, null=True)
     address = models.OneToOneField(Address, models.DO_NOTHING, blank=True, null=True)
 
     class Meta:
