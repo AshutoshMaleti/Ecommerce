@@ -65,8 +65,9 @@ class CustomersHasAddresses(models.Model):
     class Meta:
         db_table = 'customers_has_addresses'
 
-    def __str__(self):
-        return self.id
+    '''def __str__(self):
+        return self.customer'''
+
 
 class CustomersHasFavoriteProducts(models.Model):
     customers = models.OneToOneField(Customers, models.DO_NOTHING, primary_key=True)
