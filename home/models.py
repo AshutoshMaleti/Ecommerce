@@ -1,4 +1,5 @@
 from django.db import models
+from django.core.validators import MaxValueValidator, MinValueValidator
 
 #Create your models here.
 class Address(models.Model):
@@ -58,14 +59,14 @@ class Customers(models.Model):
 
 class CustomersHasAddresses(models.Model):
     id=models.AutoField(primary_key=True)
-    customer = models.OneToOneField(Customers, models.DO_NOTHING, blank=True, null=True)
-    address = models.OneToOneField(Address, models.DO_NOTHING, blank=True, null=True)
+    customer = models.OneToOneField(Customers, models.DO_NOTHING, unique=False, blank=True, null=True)
+    address = models.OneToOneField(Address, models.DO_NOTHING, unique=False, blank=True, null=True)
 
     class Meta:
         db_table = 'customers_has_addresses'
-    
-    '''def __str__(self):
-        return self.customer'''
+
+    def __str__(self):
+        return self.id
 
 class CustomersHasFavoriteProducts(models.Model):
     customers = models.OneToOneField(Customers, models.DO_NOTHING, primary_key=True)
@@ -86,10 +87,11 @@ class Items(models.Model):
         db_table = 'items'
 
     def __str__(self):
-        return self.products
+        return self.id
 
 class OrderHasItems(models.Model):
-    order = models.OneToOneField('Orders', models.DO_NOTHING, primary_key=True)
+    orderId = models.AutoField(primary_key=True)
+    order = models.OneToOneField('Orders', models.DO_NOTHING, blank=True, null=True)
     items = models.OneToOneField(Items, models.DO_NOTHING, blank=True, null=True)
 
     class Meta:
@@ -99,7 +101,7 @@ class OrderHasItems(models.Model):
         return self.order
 
 class Orders(models.Model):
-    id = models.IntegerField(primary_key=True)
+    id = models.AutoField(primary_key=True)
     purchase_date = models.DateField(blank=True, null=True)
     customers = models.ForeignKey(Customers, models.DO_NOTHING)
 
@@ -124,10 +126,11 @@ class Products(models.Model):
         return self.name
 
 class Reviews(models.Model):
-    customers = models.OneToOneField(Customers, models.DO_NOTHING, primary_key=True)
-    ratings = models.FloatField(blank=True, null=True)
-    description = models.CharField(max_length=250, blank=True, null=True)
+    reviewId=models.AutoField(primary_key=True)
+    customers = models.OneToOneField(Customers, models.DO_NOTHING)
     products = models.OneToOneField(Products, models.DO_NOTHING, blank=True, null=True)
+    ratings = models.FloatField(validators=[MinValueValidator(1.0), MaxValueValidator(5.0)], blank=True, null=True)
+    description = models.CharField(max_length=250, blank=True, null=True)
 
     class Meta:
         db_table = 'reviews'

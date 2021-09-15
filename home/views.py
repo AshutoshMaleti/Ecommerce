@@ -14,6 +14,7 @@ def Home(request):
         'show details':'get-customers-details/<str:pk>',
         'update details':'update-customers-details/<str:pk>',
         'delete customer details':'delete-customers-details/<str:pk>',
+        'add address' : 'add-address/<str:pk>/',
     }
 
     return Response(api_urls)
@@ -64,7 +65,6 @@ def SetAddress(request,pk):
 
     CustomersHasAddresses(customer=customerid, address=addressid[0]).save()
 
-    
 
     '''print(serializer.is_valid())
     if serializer.is_valid():    
