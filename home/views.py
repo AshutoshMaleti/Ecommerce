@@ -50,7 +50,7 @@ def UpdateCustomersDetails(request,pk):
 @api_view(['DELETE'])
 def DeleteCustomer(pk):
     customer=Customers.objects.get(id=pk)
-    customer.delelte()
+    customer.delete()
 
     return Response('Customer deleted!')
 
@@ -64,10 +64,5 @@ def SetAddress(request,pk):
     addressid=Address.objects.filter(state=address.initial_data['state'], city=address.initial_data['city'], street=address.initial_data['street'], number=address.initial_data['number'])
 
     CustomersHasAddresses(customer=customerid, address=addressid[0]).save()
-
-
-    '''print(serializer.is_valid())
-    if serializer.is_valid():    
-        serializer.save()'''
-    return Response('Address added')
+    Response('Address added')
 #{"state":"7","city":"7","street":"7","number":"7"}

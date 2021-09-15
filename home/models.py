@@ -36,9 +36,23 @@ class Categories(models.Model):
     def __str__(self):
         return self.name
 
+class Products(models.Model):
+    id = models.IntegerField(primary_key=True)
+    name = models.CharField(max_length=45, blank=True, null=True)
+    about = models.CharField(max_length=1000, blank=True, null=True)
+    price = models.FloatField(blank=True, null=True)
+    warranty = models.IntegerField(blank=True, null=True)
+    brand = models.ForeignKey(Brand, models.DO_NOTHING)
+
+    class Meta:
+        db_table = 'products'
+
+    def __str__(self):
+        return self.name
+
 class CategoriesHasProducts(models.Model):
     categories = models.OneToOneField(Categories, models.DO_NOTHING, blank=True, null=True)
-    products = models.OneToOneField('Products', models.DO_NOTHING, blank=True, null=True)
+    products = models.OneToOneField(Products, models.DO_NOTHING, blank=True, null=True)
 
     class Meta:
         db_table = 'categories_has_products'
@@ -68,7 +82,6 @@ class CustomersHasAddresses(models.Model):
     '''def __str__(self):
         return self.customer'''
 
-
 class CustomersHasFavoriteProducts(models.Model):
     customers = models.OneToOneField(Customers, models.DO_NOTHING, primary_key=True)
     products = models.OneToOneField(Brand, models.DO_NOTHING, blank=True, null=True)
@@ -78,53 +91,6 @@ class CustomersHasFavoriteProducts(models.Model):
 
     def __str__(self):
         return self.customers
-
-class Items(models.Model):
-    id = models.IntegerField(primary_key=True)
-    productions_date = models.DateField(blank=True, null=True)
-    products = models.ForeignKey('Products', models.DO_NOTHING, blank=True, null=True)
-
-    class Meta:
-        db_table = 'items'
-
-    def __str__(self):
-        return self.id
-
-class OrderHasItems(models.Model):
-    orderId = models.AutoField(primary_key=True)
-    order = models.OneToOneField('Orders', models.DO_NOTHING, blank=True, null=True)
-    items = models.OneToOneField(Items, models.DO_NOTHING, blank=True, null=True)
-
-    class Meta:
-        db_table = 'order_has_items'
-
-    def __str__(self):
-        return self.order
-
-class Orders(models.Model):
-    id = models.AutoField(primary_key=True)
-    purchase_date = models.DateField(blank=True, null=True)
-    customers = models.ForeignKey(Customers, models.DO_NOTHING)
-
-    class Meta:
-        db_table = 'orders'
-
-    def __str__(self):
-        return self.id
-
-class Products(models.Model):
-    id = models.IntegerField(primary_key=True)
-    name = models.CharField(max_length=45, blank=True, null=True)
-    about = models.CharField(max_length=1000, blank=True, null=True)
-    price = models.FloatField(blank=True, null=True)
-    warranty = models.IntegerField(blank=True, null=True)
-    brand = models.ForeignKey(Brand, models.DO_NOTHING)
-
-    class Meta:
-        db_table = 'products'
-
-    def __str__(self):
-        return self.name
 
 class Reviews(models.Model):
     reviewId=models.AutoField(primary_key=True)
