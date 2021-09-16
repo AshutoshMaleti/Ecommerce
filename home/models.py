@@ -1,5 +1,6 @@
 from django.db import models
 from django.core.validators import MaxValueValidator, MinValueValidator
+from django.contrib.auth.models import User
 
 #Create your models here.
 class Address(models.Model):
@@ -41,7 +42,7 @@ class Products(models.Model):
     name = models.CharField(max_length=45, blank=True, null=True)
     about = models.CharField(max_length=1000, blank=True, null=True)
     price = models.FloatField(blank=True, null=True)
-    warranty = models.IntegerField(blank=True, null=True)
+    #warranty = models.IntegerField(blank=True, null=True)
     brand = models.ForeignKey(Brand, models.DO_NOTHING)
 
     class Meta:
@@ -61,6 +62,7 @@ class CategoriesHasProducts(models.Model):
         return self.categories
 
 class Customers(models.Model):
+    user=models.OneToOneField(User, on_delete=models.CASCADE, blank=True, null=True)
     fname = models.CharField(max_length=45)
     lname = models.CharField(max_length=45, blank=True, null=True)
     email = models.CharField(max_length=45, blank=True, null=True)
@@ -79,8 +81,8 @@ class CustomersHasAddresses(models.Model):
     class Meta:
         db_table = 'customers_has_addresses'
 
-    '''def __str__(self):
-        return self.customer'''
+    def __str__(self):
+        return str(self.customer)
 
 class CustomersHasFavoriteProducts(models.Model):
     customers = models.OneToOneField(Customers, models.DO_NOTHING, primary_key=True)
