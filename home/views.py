@@ -25,10 +25,12 @@ def Brands(request):
 @api_view(['POST'])
 def CustomerDetails(request):
     serializer=CustomersSerializer(data=request.data)
-    if serializer.is_valid():
-        serializer.save()
+    user=request.user
 
-    return Response(serializer.data)
+    Customers(user=user, fname=serializer.initial_data['fname'], lname=serializer.initial_data['lname'], email=serializer.initial_data['email']).save()
+
+    response=Customers.objects.last()
+    return Response(response)
 #{"fname":"","lname":"","email":""}
 
 @api_view(['GET'])
