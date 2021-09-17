@@ -95,9 +95,9 @@ class CustomersHasFavoriteProducts(models.Model):
         return self.customers
 
 class Reviews(models.Model):
-    reviewId=models.AutoField(primary_key=True)
-    customers = models.OneToOneField(Customers, models.DO_NOTHING)
-    products = models.OneToOneField(Products, models.DO_NOTHING, blank=True, null=True)
+    reviewId = models.AutoField(primary_key=True)
+    customer = models.OneToOneField(Customers, models.DO_NOTHING)
+    product = models.OneToOneField(Products, models.DO_NOTHING, blank=True, null=True)
     ratings = models.FloatField(validators=[MinValueValidator(1.0), MaxValueValidator(5.0)], blank=True, null=True)
     description = models.CharField(max_length=250, blank=True, null=True)
 

@@ -1,4 +1,3 @@
-from django.http.response import HttpResponse
 from django.shortcuts import get_object_or_404
 
 from rest_framework.response import Response
@@ -8,45 +7,36 @@ from .models import *
 from .serializers import *
 
 # Create your views here.
-def AddToCart(request):
+@api_view(['POST'])
+def AddToCart(request, pk):
     if request.user.is_authenticated:
-        print('inside is_authenticated')
         user = request.user.id
-        print(user)
-        customerQs = Customers.objects.filter(user=user).first()
-        print(customerQs)
-        #print(customerQs[0]['id'])
-        orderQs = Orders.objects.get_or_create(customer=customerQs, status=False)
-        print(orderQs)
-        orderProduct=orderQs.OrderHasProduct_set.all()
-        print(orderProduct)
+        customerQs = Customers.objects.filter(user=user)    #output - <QuerySet [{'id': 18, 'user_id': 9, 'fname': 'ashu', 'lname': 'maleti', 'email': 'blah'}]> a queryset something like this.
+        productQs = get_object_or_404(Products, id=pk)  #output - iphone
+        order = Orders.objects.get_or_create(customer=customerQs[0])    #creates order if not present with associated customer passed.
 
-        '''customer = request.user.customer
-        order = Orders.objects.get_or_create(customer)
-        product = order.orderhasproduct_set.all()'''
+        orderHasItems = OrderHasProduct.objects.filter(order__customer__fname=customerQs[0], order__status=False, products__name=productQs)
+        
+        if orderHasItems.exists():
+            incrementor = orderHasItems[0].quantity+1
+            orderHasItems.update(quantity=incrementor)
+        else:
+            OrderHasProduct.objects.create(order=order[0], products=productQs).save()
+
+        return Response('Added to cart!')
+
     else:
         items = []
         order = {'items':items}
 
     return Response('chal rha hai')
 
-'''def AddToCart(request, pk):
-    productId = get_object_or_404(Products, id=pk)
-    orderItem = OrderHasProduct.objects.filter(productId)
-    orderQs = Orders.objects.filter(customerId=request.User, status=False)
-    if orderQs.exists():
-        item = orderItem[0]
-        if item in orderQs[0]:
-            orderItem[0]['quantity'] += 1
-            orderQs.save()
-        else:
-            orderItem = OrderHasProduct.objects.create(order=productId)
-    return HttpResponse('This is Add Items page.')'''
 
 @api_view(['POST'])
-def Order(request, pk):
+def Order(request):
     serializer = OrderSerializer(data=request.data)
     if serializer.is_valid():
+        serializer.data.status=True
         serializer.save()
 
     return Response('Order placed!')

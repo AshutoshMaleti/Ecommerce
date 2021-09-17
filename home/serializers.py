@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Address, Customers
+from .models import Address, Customers, Reviews
 
 class CustomersSerializer(serializers.ModelSerializer):
     class Meta:
@@ -15,3 +15,8 @@ class AddressSerializer(serializers.ModelSerializer):
     class Meta:
         model = Address
         fields = ['id', 'state', 'city', 'street', 'number']
+
+class ReviewsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Reviews
+        fields = ['reviewId', 'ratings', 'description']
