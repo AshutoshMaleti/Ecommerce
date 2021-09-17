@@ -19,4 +19,4 @@ class AddressSerializer(serializers.ModelSerializer):
 class ReviewsSerializer(serializers.ModelSerializer):
     class Meta:
         model = Reviews
-        fields = ['reviewId', 'ratings', 'description']
+        fields = ['id', 'ratings', 'description']

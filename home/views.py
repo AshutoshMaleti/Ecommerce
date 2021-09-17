@@ -47,7 +47,7 @@ def CustomerDetails(request):
 def GetCustomersDetails(request, pk):
     details=Customers.objects.get(id=pk)
     serializer=CustomersSerializer(details, many=False)
-    
+
     return Response(serializer.data)
 
 @api_view(['POST'])
@@ -60,7 +60,7 @@ def UpdateCustomersDetails(request, pk):
     return Response(serializer.data)
 
 @api_view(['DELETE'])
-def DeleteCustomer(pk):
+def DeleteCustomer(request, pk):
     customer=Customers.objects.get(id=pk)
     customer.delete()
 
@@ -81,23 +81,22 @@ def SetAddress(request, pk):
 
 @api_view(['POST'])
 def WriteReviews(request, pk):
-    customerQs = request.user
+    customerQs = Customers.objects.get(user=request.user)
     productQs = Products.objects.get(id=pk)
 
     serializer=ReviewsSerializer(data=request.data)
     if serializer.is_valid():
-        Reviews(cusotmer=customerQs, product=productQs, ratings=serializer.data['ratings'], description=serializer.data['description']).save()
+        serializer.save(customer=customerQs, product=productQs)
 
     return Response(serializer.data)
+#{"ratings":"3","description":"meh"}
 
 @api_view(['GET'])
 def ReadReviews(request, pk):
-    product = get_object_or_404(Products, id=pk)
-    
-    reviewQs = Reviews.objects.filter(product__id=product)
-    reviews = ReviewsSerializer(reviewQs, many=True)
+    reviewId=Reviews.objects.get(product__id=pk)
+    reviews = ReviewsSerializer(reviewId, many=True)
 
-    return Response(reviews)
+    return Response(reviews.data)
 
 @api_view(['PATCH'])
 def UpdateReviews(request, pk):
@@ -109,7 +108,8 @@ def UpdateReviews(request, pk):
     return Response(serializer.data)
 
 @api_view(['DELETE'])
-def DeleteReviews(pk):
-    Reviews.objects.get(id=pk).delete()
+def DeleteReviews(request, pk):
+    review = Reviews.objects.get(id=pk)
+    review.delete()
     
-    return Response('Customer deleted.')
+    return Response('Review deleted.')

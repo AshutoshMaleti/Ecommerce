@@ -75,8 +75,8 @@ class Customers(models.Model):
 
 class CustomersHasAddresses(models.Model):
     id=models.AutoField(primary_key=True)
-    customer = models.OneToOneField(Customers, models.DO_NOTHING, unique=False, blank=True, null=True)
-    address = models.OneToOneField(Address, models.DO_NOTHING, unique=False, blank=True, null=True)
+    customer = models.ForeignKey(Customers, models.CASCADE, unique=False, blank=True, null=True)
+    address = models.ForeignKey(Address, models.CASCADE, unique=False, blank=True, null=True)
 
     class Meta:
         db_table = 'customers_has_addresses'
@@ -95,9 +95,9 @@ class CustomersHasFavoriteProducts(models.Model):
         return self.customers
 
 class Reviews(models.Model):
-    reviewId = models.AutoField(primary_key=True)
-    customer = models.OneToOneField(Customers, models.DO_NOTHING)
-    product = models.OneToOneField(Products, models.DO_NOTHING, blank=True, null=True)
+    id = models.AutoField(primary_key=True)
+    customer = models.ForeignKey(Customers, models.SET_NULL, null=True, blank=True)
+    product = models.ForeignKey(Products, models.CASCADE)
     ratings = models.FloatField(validators=[MinValueValidator(1.0), MaxValueValidator(5.0)], blank=True, null=True)
     description = models.CharField(max_length=250, blank=True, null=True)
 
@@ -105,4 +105,4 @@ class Reviews(models.Model):
         db_table = 'reviews'
 
     def __str__(self):
-        return self.customers
+        return str(self.id)
