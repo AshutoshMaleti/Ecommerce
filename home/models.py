@@ -42,7 +42,6 @@ class Products(models.Model):
     name = models.CharField(max_length=45, blank=True, null=True)
     about = models.CharField(max_length=1000, blank=True, null=True)
     price = models.FloatField(blank=True, null=True)
-    #warranty = models.IntegerField(blank=True, null=True)
     brand = models.ForeignKey(Brand, models.DO_NOTHING)
 
     class Meta:
@@ -52,8 +51,9 @@ class Products(models.Model):
         return self.name
 
 class CategoriesHasProducts(models.Model):
-    categories = models.OneToOneField(Categories, models.DO_NOTHING, blank=True, null=True)
-    products = models.OneToOneField(Products, models.DO_NOTHING, blank=True, null=True)
+    id = models.AutoField(primary_key=True)
+    categories = models.ForeignKey(Categories, models.CASCADE, blank=True, null=True)
+    products = models.ForeignKey(Products, models.CASCADE, blank=True, null=True)
 
     class Meta:
         db_table = 'categories_has_products'
@@ -85,8 +85,9 @@ class CustomersHasAddresses(models.Model):
         return str(self.customer)
 
 class CustomersHasFavoriteProducts(models.Model):
-    customers = models.OneToOneField(Customers, models.DO_NOTHING, primary_key=True)
-    products = models.OneToOneField(Brand, models.DO_NOTHING, blank=True, null=True)
+    id = models.AutoField(primary_key=True)
+    customers = models.ForeignKey(Customers, models.CASCADE, unique=False)
+    products = models.ForeignKey(Products, models.CASCADE, unique=False)
 
     class Meta:
         db_table = 'customers_has_favorite_products'
