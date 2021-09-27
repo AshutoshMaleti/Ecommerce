@@ -73,4 +73,3 @@ def OrderSummary(request):
         total += i['quantity']*priceQs[0]['price']
 
     return Response('Order summary : {}'.format(total))
-
