@@ -1,4 +1,5 @@
 from django.shortcuts import get_object_or_404
+from django.contrib.auth.decorators import login_required
 
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
@@ -7,29 +8,23 @@ from .models import *
 from .serializers import *
 
 # Create your views here.
+@login_required(login_url='/account/signin/')
 @api_view(['POST'])
 def AddToCart(request, pk):
-    if request.user.is_authenticated:
-        user = request.user.id
-        customerQs = Customers.objects.filter(user=user)    #output - <QuerySet [{'id': 18, 'user_id': 9, 'fname': 'ashu', 'lname': 'maleti', 'email': 'blah'}]> a queryset something like this.
-        productQs = get_object_or_404(Products, id=pk)  #output - iphone
-        order = Orders.objects.get_or_create(customer=customerQs[0])    #creates order if not present with associated customer passed.
+    user = request.user.id
+    customerQs = Customers.objects.filter(user=user)    #output - <QuerySet [{'id': 18, 'user_id': 9, 'fname': 'ashu', 'lname': 'maleti', 'email': 'blah'}]> a queryset something like this.
+    productQs = get_object_or_404(Products, id=pk)  #output - iphone
+    order = Orders.objects.get_or_create(customer=customerQs[0])    #creates order if not present with associated customer passed.
 
-        orderHasItems = OrderHasProduct.objects.filter(order__customer__fname=customerQs[0], order__status=False, products__name=productQs)
+    orderHasItems = OrderHasProduct.objects.filter(order__customer__fname=customerQs[0], order__status=False, products__name=productQs)
 
-        if orderHasItems.exists():
-            incrementor = orderHasItems[0].quantity+1
-            orderHasItems.update(quantity=incrementor)
-        else:
-            OrderHasProduct.objects.create(order=order[0], products=productQs).save()
-
-        return Response(orderHasItems.values())
-
+    if orderHasItems.exists():
+        incrementor = orderHasItems[0].quantity+1
+        orderHasItems.update(quantity=incrementor)
     else:
-        items = []
-        order = {'items':items}
+        OrderHasProduct.objects.create(order=order[0], products=productQs).save()
 
-    return Response('chal rha hai')
+    return Response(orderHasItems.values())
 
 @api_view(['POST'])
 def RemoveFromCart(request, pk):

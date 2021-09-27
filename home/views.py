@@ -11,6 +11,11 @@ from .models import *
 def Home(request):
     api_urls={
         'home':'/',
+
+        'signup':'/account/signup/',
+        'signin':'/account/signin/',
+        'signout':'/account/signout/',
+
         'brands':'/brands/',
 
         'enter customer details':'/customers-details/',
@@ -20,10 +25,10 @@ def Home(request):
 
         'add address':'/add-address/<str:pk>/',
 
-        'add product of id pk to cart':'/add-to-cart/<str:pk>/',
-        'remove a product of id pk from cart':'remove-from-cart/<str:pk>/',
-        'delete a product of id pk from cart':'delete-from-cart/<str:pk>/',
-        'get order summary':'add-to-cart/<str:pk>/',
+        'add product of id pk to cart':'/orders/add-to-cart/<str:pk>/',
+        'remove a product of id pk from cart':'/orders/remove-from-cart/<str:pk>/',
+        'delete a product of id pk from cart':'/orders/delete-from-cart/<str:pk>/',
+        'get order summary':'/orders/add-to-cart/<str:pk>/',
 
         'write a review for a product with id=pk':'write-reviews/<str:pk>/',
         'read all the reviews for a product with id=pk':'read-reviews/<str:pk>/',
