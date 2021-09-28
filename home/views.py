@@ -1,5 +1,7 @@
 from django.shortcuts import render, get_object_or_404
 
+from django.contrib.auth.decorators import login_required
+
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
 
@@ -44,6 +46,7 @@ def Home(request):
 def Brands(request):
     return render(request, 'brands.html')
 
+@login_required(login_url='/account/signin/')
 @api_view(['POST'])
 def CustomerDetails(request):
     serializer=CustomersSerializer(data=request.data)
@@ -54,6 +57,7 @@ def CustomerDetails(request):
     return Response(serializer.initial_data)
 #{"fname":"","lname":"","email":""}
 
+@login_required(login_url='/account/signin/')
 @api_view(['GET'])
 def GetCustomersDetails(request, pk):
     details=Customers.objects.get(id=pk)
@@ -61,18 +65,20 @@ def GetCustomersDetails(request, pk):
 
     return Response(serializer.data)
 
+@login_required(login_url='/account/signin/')
 @api_view(['PATCH'])
 def UpdateCustomersDetails(request, pk):
     instance=Customers.objects.get(id=pk)
-    print(instance)
     serializer=CustomersSerializer(instance, data=request.data)
-    print(serializer)
-    print(serializer.is_valid())
+
     if serializer.is_valid():
         serializer.save()
-
+    #print(serializer.errors) this is used to see the error details in serializers.
+    #patch requests only works here wouldn't work until you provide a first name because it's a required field.
+    
     return Response(serializer.data)
 
+@login_required(login_url='/account/signin/')
 @api_view(['DELETE'])
 def DeleteCustomer(request, pk):
     customer=Customers.objects.get(id=pk)
@@ -80,6 +86,7 @@ def DeleteCustomer(request, pk):
 
     return Response('Customer deleted!')
 
+@login_required(login_url='/account/signin/')
 @api_view(['POST'])
 def SetAddress(request, pk):
     address=AddressSerializer(data=request.data)
@@ -93,6 +100,7 @@ def SetAddress(request, pk):
     return Response('Address added')
 #{"state":"7","city":"7","street":"7","number":"7"}
 
+@login_required(login_url='/account/signin/')
 @api_view(['POST'])
 def WriteReviews(request, pk):
     customerQs = Customers.objects.get(user=request.user)
@@ -105,6 +113,7 @@ def WriteReviews(request, pk):
     return Response(serializer.data)
 #{"ratings":"3","description":"meh"}
 
+@login_required(login_url='/account/signin/')
 @api_view(['GET'])
 def ReadReviews(request, pk):
     reviewId=Reviews.objects.filter(product__id=pk)
@@ -112,6 +121,7 @@ def ReadReviews(request, pk):
 
     return Response(reviews.data)
 
+@login_required(login_url='/account/signin/')
 @api_view(['PATCH'])
 def UpdateReviews(request, pk):
     instance = Reviews.objects.get(id=pk)
@@ -121,6 +131,7 @@ def UpdateReviews(request, pk):
 
     return Response(serializer.data)
 
+@login_required(login_url='/account/signin/')
 @api_view(['DELETE'])
 def DeleteReviews(request, pk):
     review = Reviews.objects.get(id=pk)
@@ -128,6 +139,7 @@ def DeleteReviews(request, pk):
     
     return Response('Review deleted.')
 
+@login_required(login_url='/account/signin/')
 @api_view(['POST'])
 def AddToFav(request, pk):
     productQs = get_object_or_404(Products, id=pk)
@@ -137,6 +149,7 @@ def AddToFav(request, pk):
 
     return Response('Product added to faviorites.')
 
+@login_required(login_url='/account/signin/')
 @api_view(['DELETE'])
 def RemoveFromFav(request, pk):
     productQs = get_object_or_404(Products, id=pk)
