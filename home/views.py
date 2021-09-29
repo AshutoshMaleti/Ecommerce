@@ -1,6 +1,8 @@
 from django.shortcuts import render, get_object_or_404
-
 from django.contrib.auth.decorators import login_required
+
+from django.db import IntegrityError
+
 
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
@@ -20,12 +22,12 @@ def Home(request):
 
         'brands':'/brands/',
 
-        'enter customer details':'/customers-details/',
-        'show customer details':'/get-customers-details/<str:pk>/',
-        'update customer details':'/update-customers-details/<str:pk>/',
-        'delete customer details':'/delete-customers-details/<str:pk>/',
+        'enter customer details':'/add-customers-details/',
+        'show customer details':'/get-customers-details/',
+        'update customer details':'/update-customers-details/',
+        'delete customer details':'/delete-customers-details/',
 
-        'add address':'/add-address/<str:pk>/',
+        'add address for current user':'/add-address/',
 
         'add product of id pk to cart':'/orders/add-to-cart/<str:pk>/',
         'remove a product of id pk from cart':'/orders/remove-from-cart/<str:pk>/',
@@ -49,26 +51,31 @@ def Brands(request):
 @login_required(login_url='/account/signin/')
 @api_view(['POST'])
 def CustomerDetails(request):
-    serializer=CustomersSerializer(data=request.data)
-    user=request.user
-    Customers(user=user, fname=serializer.initial_data['fname'], lname=serializer.initial_data['lname'], email=serializer.initial_data['email']).save()
+    try:
+        serializer=CustomersSerializer(data=request.data)
+        user=request.user
+        
+        Customers(user=user, fname=serializer.initial_data['fname'], lname=serializer.initial_data['lname'], email=serializer.initial_data['email']).save()
 
-    response=Customers.objects.last()
-    return Response(serializer.initial_data)
+        response=Customers.objects.last()
+        return Response(serializer.initial_data)
+
+    except IntegrityError:
+        return Response('Customer details already exists for current user, try updating.')
 #{"fname":"","lname":"","email":""}
 
 @login_required(login_url='/account/signin/')
 @api_view(['GET'])
-def GetCustomersDetails(request, pk):
-    details=Customers.objects.get(id=pk)
+def GetCustomersDetails(request):
+    details=Customers.objects.get(user=request.user)
     serializer=CustomersSerializer(details, many=False)
 
     return Response(serializer.data)
 
 @login_required(login_url='/account/signin/')
 @api_view(['PATCH'])
-def UpdateCustomersDetails(request, pk):
-    instance=Customers.objects.get(id=pk)
+def UpdateCustomersDetails(request):
+    instance=Customers.objects.get(user=request.user)
     serializer=CustomersSerializer(instance, data=request.data)
 
     if serializer.is_valid():
@@ -80,20 +87,20 @@ def UpdateCustomersDetails(request, pk):
 
 @login_required(login_url='/account/signin/')
 @api_view(['DELETE'])
-def DeleteCustomer(request, pk):
-    customer=Customers.objects.get(id=pk)
+def DeleteCustomer(request):
+    customer=Customers.objects.get(user=request.user)
     customer.delete()
 
     return Response('Customer deleted!')
 
 @login_required(login_url='/account/signin/')
 @api_view(['POST'])
-def SetAddress(request, pk):
+def SetAddress(request):
     address=AddressSerializer(data=request.data)
 
     Address.objects.get_or_create(state=address.initial_data['state'], city=address.initial_data['city'], street=address.initial_data['street'], number=address.initial_data['number'])
 
-    customerid=Customers.objects.get(id=pk)
+    customerid=Customers.objects.get(user=request.user)
     addressid=Address.objects.filter(state=address.initial_data['state'], city=address.initial_data['city'], street=address.initial_data['street'], number=address.initial_data['number'])
 
     CustomersHasAddresses(customer=customerid, address=addressid[0]).save()
@@ -124,20 +131,27 @@ def ReadReviews(request, pk):
 @login_required(login_url='/account/signin/')
 @api_view(['PATCH'])
 def UpdateReviews(request, pk):
-    instance = Reviews.objects.get(id=pk)
-    serializer=ReviewsSerializer(instance, data=request.data)
-    if serializer.is_valid():
-        serializer.save()
+    try:
+        instance = Reviews.objects.get(customer__user=request.user, id=pk)
+        serializer=ReviewsSerializer(instance, data=request.data)
+        
+        if serializer.is_valid():
+            serializer.save()
 
-    return Response(serializer.data)
+        return Response(serializer.data)
+    except:
+        return Response("reviews with given id doesn't exists for current user.")
 
 @login_required(login_url='/account/signin/')
 @api_view(['DELETE'])
 def DeleteReviews(request, pk):
-    review = Reviews.objects.get(id=pk)
-    review.delete()
-    
-    return Response('Review deleted.')
+    try:
+        review = Reviews.objects.get(customer__user=request.user, id=pk)
+        review.delete()
+        
+        return Response('Review deleted.')
+    except:
+        return Response("you can't delete reviews not created by you.")
 
 @login_required(login_url='/account/signin/')
 @api_view(['POST'])

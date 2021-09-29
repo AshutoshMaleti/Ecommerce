@@ -6,10 +6,10 @@ urlpatterns = [
     path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
     path('brands/', views.Brands, name='Brands'),
 
-    path('customers-details/', views.CustomerDetails, name='CustomerDetails'),
-    path('get-customers-details/<str:pk>/', views.GetCustomersDetails, name='GetCustomersDetails'),
-    path('update-customers-details/<str:pk>/', views.UpdateCustomersDetails, name='UpdateCustomersDetails'),
-    path('delete-customers-details/<str:pk>/', views.DeleteCustomer, name='DeleteCustomer'),
+    path('add-customers-details/', views.CustomerDetails, name='CustomerDetails'),
+    path('get-customers-details/', views.GetCustomersDetails, name='GetCustomersDetails'),
+    path('update-customers-details/', views.UpdateCustomersDetails, name='UpdateCustomersDetails'),
+    path('delete-customers-details/', views.DeleteCustomer, name='DeleteCustomer'),
     
     path('add-address/<str:pk>/', views.SetAddress, name='SetAddress'),
 

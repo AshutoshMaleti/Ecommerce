@@ -47,7 +47,7 @@ def DeleteItem(request, pk):
     productQs = OrderHasProduct.objects.filter(products=pk)
     productQs.delete()
 
-    return Response('Products in cart deleted')
+    return Response('Products in cart deleted.')
 
 @login_required(login_url='/account/signin/')
 @api_view(['POST'])
@@ -63,11 +63,11 @@ def Order(request):
 @api_view(['GET'])
 def OrderSummary(request):
     productQuantity = OrderHasProduct.objects.filter(order__customer__user=request.user).values()
-    print(productQuantity)
+
     total = 0
 
-    for i in productQuantity:
-        priceQs = Products.objects.filter(id=i['products_id']).values()
-        total += i['quantity']*priceQs[0]['price']
+    for items in productQuantity:
+        priceQs = Products.objects.filter(id=items['products_id']).values()
+        total += items['quantity']*priceQs[0]['price']
 
     return Response('Order summary : {}'.format(total))
