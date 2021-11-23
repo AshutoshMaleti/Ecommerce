@@ -12,7 +12,7 @@ def signup(request):
     else:
         form = CreateUser()
         if request.method=='POST':
-            form =CreateUser(request.POST)
+            form=CreateUser(request.POST)
             if form.is_valid():
                 form.save()
                 user=form.cleaned_data.get('username')
@@ -46,3 +46,4 @@ def signin(request):
 def signout(request):
     logout(request)
     return render(request, 'home.html')
+    

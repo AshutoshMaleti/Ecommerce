@@ -3,7 +3,6 @@ from django.contrib.auth.decorators import login_required
 
 from django.db import IntegrityError
 
-
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
 
